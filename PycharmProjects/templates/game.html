@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>משחק יום האהבה💖</title>
+
+<!-- פונט בלוני -->
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+/* בסיס */
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  padding:12px;
+  font-family:'Fredoka','Varela Round','Comic Sans MS',sans-serif;
+  direction:rtl;
+  background:#ffb6c9;
+  overflow-x:hidden;
+  -webkit-tap-highlight-color: transparent; /* טאץ' אמיתי */
+}
+
+/* תמונות תמיד בתוך המסך */
+img{
+  max-width:100%;
+  height:auto;
+  display:block;
+}
+
+/* ===== רקע לבבות פיקסלים ===== */
+.hearts-bg{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+.pixel-heart{
+  position:absolute;
+  bottom:-60px;
+  width:28px;
+  height:28px;
+  image-rendering:pixelated;
+  opacity:0.85;
+  animation:
+    floatUp 18s linear infinite,
+    pulse 1.4s ease-in-out infinite;
+}
+
+.pixel-heart img{
+  width:100%;
+  height:100%;
+}
+
+@keyframes floatUp{
+  from{ transform:translateY(0); }
+  to{ transform:translateY(-120vh); }
+}
+
+@keyframes pulse{
+  0%,100%{ transform:scale(1); }
+  50%{ transform:scale(1.4); }
+}
+
+/* ===== כרטיס ===== */
+.card{
+  position:relative;
+  z-index:2;
+  max-width:420px;
+  width:100%;
+  margin:auto;
+  background:#ffe1ea;
+  padding:16px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+.center{
+  text-align:center;
+}
+
+/* טקסטים */
+h1,h2,h3{
+  color:#d1002c;
+  font-weight:700;
+}
+
+p{
+  color:#b00024;
+  font-size:18px;
+}
+
+/* ===== כפתורים – מותאם לנייד ===== */
+button{
+  background:#ff2f5e;
+  color:white;
+  font-size:18px;
+  border:none;
+  border-radius:999px;
+  padding:12px 20px;
+  min-height:48px;
+  width:100%;
+  max-width:320px;
+  box-shadow:0 6px 0 #c4002d;
+  cursor:pointer;
+  transition:transform .1s;
+}
+
+button:active{
+  transform:translateY(4px);
+  box-shadow:0 2px 0 #c4002d;
+}
+
+/* ריווח בין כפתורים */
+button + button{
+  margin-top:10px;
+}
+
+/* ===== קלט ===== */
+input{
+  width:100%;
+  min-height:48px;
+  padding:12px;
+  font-size:18px;
+  border-radius:999px;
+  border:1px solid #ddd;
+  text-align:center;
+}
+
+/* ===== חידת תמונות – רספונסיבי ===== */
+.pics{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.pic-box{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+.pic-box img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+</style>
+</head>
+
+<body>
+
+<!-- לבבות פיקסלים -->
+<div class="hearts-bg">
+  {% for i in range(20) %}
+    <span class="pixel-heart"
+      style="
+        left:{{ loop.index0 * 5 }}%;
+        animation-delay: {{ loop.index0 * 0.6 }}s;
+      ">
+      <img src="{{ url_for('static', filename='images/pixel_heart.png') }}">
+    </span>
+  {% endfor %}
+</div>
+
+<div class="card">
+
+<h1 class="center">💘 נחש את המתנה 💘</h1>
+
+{% if message and step in [1,2,3,4] %}
+<p class="center"><strong>{{ message }}</strong></p>
+{% endif %}
+
+{% if step == 0 %}
+<div class="center">
+  <h2>{{ welcome_text }}</h2>
+  <form method="post">
+    <input type="hidden" name="action" value="start_game">
+    <button>התחל ❤️</button>
+  </form>
+</div>
+
+{% elif step == 1 %}
+<div class="center">
+  <p><strong>מהו המספר החסר במשולש הימני?</strong></p>
+  <img src="{{ url_for('static', filename='images/math.png') }}">
+  <form method="post">
+    <input type="text" name="math_guess">
+    <input type="hidden" name="action" value="math_submit">
+    <button>בדוק</button>
+  </form>
+</div>
+
+{% elif step == 2 %}
+<div class="center" style="position:relative">
+  <img src="{{ url_for('static', filename='images/israel_map.png') }}">
+  <form method="post" id="mapForm">
+    <input type="hidden" name="map_choice" id="map_choice">
+    <input type="hidden" name="action" value="map_pick">
+  </form>
+  {% for n,l,t in map_positions %}
+    <button type="button"
+      style="position:absolute;left:{{l}};top:{{t}};width:auto;min-height:auto;padding:6px 10px;font-size:14px"
+      onclick="
+        document.getElementById('map_choice').value='{{n}}';
+        document.getElementById('mapForm').submit();
+      ">
+      {{ n }}
+    </button>
+  {% endfor %}
+</div>
+
+{% elif step == 3 %}
+<div class="center">
+  <div class="pics">
+    {% for img in pic_images %}
+      <div class="pic-box">
+        <img src="{{ url_for('static', filename='images/' + img) }}">
+      </div>
+    {% endfor %}
+  </div>
+  <form method="post">
+    <input type="text" name="pic_guess">
+    <input type="hidden" name="action" value="pic_submit">
+    <button>שלח</button>
+  </form>
+</div>
+
+{% elif step == 4 %}
+<div class="center">
+  <h3>מה מחמם בלי להידלק ומרגיע בלי לגעת?</h3>
+  <form method="post">
+    <input type="text" name="text_guess">
+    <input type="hidden" name="action" value="text_submit">
+    <button>שלח</button>
+  </form>
+</div>
+
+{% elif step == 5 %}
+<div class="center">
+<form method="post" id="dateForm">
+  <input type="hidden" name="date_choice" id="date_choice">
+  <input type="hidden" name="action" value="date_pick">
+</form>
+
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+{% for d in ["15","16","17","18","19","20","21"] %}
+<button type="button"
+ onclick="
+  document.getElementById('date_choice').value='2026-02-{{d}}';
+  document.getElementById('dateForm').submit();
+ ">
+ {{ d }}/02
+</button>
+{% endfor %}
+</div>
+</div>
+
+{% elif step == 999 %}
+<div class="center">
+  <h2>🎉 סיימת את המשחק 🎉</h2>
+  <p>מחכה לך הפתעה מתוקה 💕</p>
+</div>
+{% endif %}
+
+</div>
+</body>
+</html>
