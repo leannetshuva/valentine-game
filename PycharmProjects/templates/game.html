@@ -5,14 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>משחק יום האהבה💖</title>
 
-<!-- פונט בלוני -->
+
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
 
 <style>
-/* בסיס */
-*{
-  box-sizing:border-box;
-}
+*{ box-sizing:border-box; }
 
 body{
   margin:0;
@@ -21,21 +19,32 @@ body{
   direction:rtl;
   background:#ffb6c9;
   overflow-x:hidden;
-  -webkit-tap-highlight-color: transparent; /* טאץ' אמיתי */
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* תמונות תמיד בתוך המסך */
-img{
+img, object{
   max-width:100%;
   height:auto;
   display:block;
 }
 
-/* ===== רקע לבבות פיקסלים ===== */
-.hearts-bg{
+/* ===== רקע GIF לבבות ===== */
+.gif-hearts-bg{
   position:fixed;
   inset:0;
   z-index:0;
+  pointer-events:none;
+  background-image:url("{{ url_for('static', filename='images/pulsing_heart.gif') }}");
+  background-repeat:repeat;
+  background-size:130px auto;
+  opacity:0.4;
+}
+
+/* ===== לבבות צפים ===== */
+.hearts-bg{
+  position:fixed;
+  inset:0;
+  z-index:1;
   pointer-events:none;
   overflow:hidden;
 }
@@ -45,11 +54,8 @@ img{
   bottom:-60px;
   width:28px;
   height:28px;
-  image-rendering:pixelated;
   opacity:0.85;
-  animation:
-    floatUp 18s linear infinite,
-    pulse 1.4s ease-in-out infinite;
+  animation: floatUp 18s linear infinite, pulse 1.4s ease-in-out infinite;
 }
 
 .pixel-heart img{
@@ -80,22 +86,19 @@ img{
   box-shadow:0 10px 30px rgba(0,0,0,0.15);
 }
 
-.center{
-  text-align:center;
-}
+.center{ text-align:center; }
 
-/* טקסטים */
 h1,h2,h3{
-  color:#d1002c;
+  color:#e84a7f;
   font-weight:700;
 }
 
 p{
-  color:#b00024;
+  color:#e0638c;
   font-size:18px;
 }
 
-/* ===== כפתורים – מותאם לנייד ===== */
+/* ===== כפתורים רגילים ===== */
 button{
   background:#ff2f5e;
   color:white;
@@ -108,7 +111,6 @@ button{
   max-width:320px;
   box-shadow:0 6px 0 #c4002d;
   cursor:pointer;
-  transition:transform .1s;
 }
 
 button:active{
@@ -116,12 +118,8 @@ button:active{
   box-shadow:0 2px 0 #c4002d;
 }
 
-/* ריווח בין כפתורים */
-button + button{
-  margin-top:10px;
-}
+button + button{ margin-top:10px; }
 
-/* ===== קלט ===== */
 input{
   width:100%;
   min-height:48px;
@@ -132,7 +130,13 @@ input{
   text-align:center;
 }
 
-/* ===== חידת תמונות – רספונסיבי ===== */
+.balloon-btn{
+  font-family: 'Baloo 2', 'Fredoka', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+/* ===== חידת תמונות ===== */
 .pics{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -141,7 +145,6 @@ input{
 }
 
 .pic-box{
-  width:100%;
   aspect-ratio:1/1;
   border-radius:16px;
   overflow:hidden;
@@ -154,19 +157,100 @@ input{
   height:100%;
   object-fit:cover;
 }
+
+/* ===== מפה SVG ===== */
+.map-wrapper{
+  position:relative;
+  width:100%;
+}
+
+/* ===== כפתורי מפה – לב ===== */
+.map-btn{
+  position:absolute;
+  width:34px;
+  height:34px;
+  background:none;
+  border:none;
+  padding:0;
+  cursor:pointer;
+}
+
+.map-btn img{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.map-btn span{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:11px;
+  font-weight:700;
+  pointer-events:none;
+}
+
+.map-btn{
+  background:transparent;
+  outline:none;
+  box-shadow:none;
+}
+
+.map-btn img{
+  background:transparent;
+}
+
+/* ===== כפתורי תאריך ===== */
+.date-btn{
+  width:80px;
+  height:80px;
+  border-radius:16px; /* ריבוע עם פינות רכות */
+  font-size:16px;
+  font-weight:700;
+  background:#ff5c8a;
+  box-shadow:0 6px 0 #c4002d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.date-grid{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.lock-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(255,182,201,0.95);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.lock-overlay img{
+  width:220px;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- לבבות פיקסלים -->
+<!-- 💖 רקע GIF -->
+<div class="gif-hearts-bg"></div>
+
+<!-- 💕 לבבות צפים -->
 <div class="hearts-bg">
   {% for i in range(20) %}
     <span class="pixel-heart"
-      style="
-        left:{{ loop.index0 * 5 }}%;
-        animation-delay: {{ loop.index0 * 0.6 }}s;
-      ">
+      style="left:{{ loop.index0 * 5 }}%; animation-delay: {{ loop.index0 * 0.6 }}s;">
       <img src="{{ url_for('static', filename='images/pixel_heart.png') }}">
     </span>
   {% endfor %}
@@ -176,51 +260,99 @@ input{
 
 <h1 class="center">💘 נחש את המתנה 💘</h1>
 
-{% if message and step in [1,2,3,4] %}
+{% if message and step in [1,2,3,4,5] %}
 <p class="center"><strong>{{ message }}</strong></p>
 {% endif %}
 
 {% if step == 0 %}
 <div class="center">
-  <h2>{{ welcome_text }}</h2>
+  <h2>{{ welcome_text | safe }}</h2>
   <form method="post">
     <input type="hidden" name="action" value="start_game">
-    <button>התחל ❤️</button>
+    <button class="balloon-btn">התחל💖</button>
+  </form>
+</div>
+
+{% elif step == 0.5 %}
+<div class="center">
+  <h2>איך משחקים?💘</h2>
+  <p>
+    לפניך 3 חידות קצרות: מתמטית, ויזואלית וטקסטואלית, בכל אחת מהן יש לך 3 ניסיונות לענות תשובה נכונה😏<br>
+    כל חידה מהווה רמז למתנת יום האהבה שלך💖<br><br>
+
+    החוק היחיד: אין התערבות שלי, כלומר, אם לא תצליח לגלות בעצמך תצטרך להשאר בסימן שאלה...<br>
+    <br>יום אהבה שמח אהוב שלי😉
+  </p>
+  <form method="post">
+    <button name="action" value="start_after_instructions" class="balloon-btn">
+      יאללה, מתחילים🎈
+    </button>
   </form>
 </div>
 
 {% elif step == 1 %}
 <div class="center">
-  <p><strong>מהו המספר החסר במשולש הימני?</strong></p>
+  <p><strong>
+    מכיוון שאתה טוען שאתה אוהב מספרים, נתחמם בעזרת חידה פשוטה:<br>
+    מהו הקוד לכספת?
+  </strong></p>
   <img src="{{ url_for('static', filename='images/math.png') }}">
+  {% if not session.get('unlock_math') %}
   <form method="post">
     <input type="text" name="math_guess">
     <input type="hidden" name="action" value="math_submit">
-    <button>בדוק</button>
+    <button class="balloon-btn">בדוק</button>
   </form>
+  {% endif %}
 </div>
 
+{% if step == 1 and session.get('unlock_math') %}
+<!-- 🔓 OVERLAY -->
+<div class="lock-overlay">
+  <img src="{{ url_for('static', filename='images/lock.gif') }}">
+</div>
+<form method="post" id="autoContinue">
+  <input type="hidden" name="action" value="continue_after_success">
+</form>
+<script>
+  setTimeout(() => {
+    document.getElementById("autoContinue").submit();
+  }, 1800); // משך הגיף
+</script>
+{% endif %}
+
 {% elif step == 2 %}
-<div class="center" style="position:relative">
-  <img src="{{ url_for('static', filename='images/israel_map.png') }}">
+<div class="center map-wrapper">
+  <p class="map-instructions">
+  תחבר (או תנחש) את המספרים שמצאת בחידה הקודמת.<br>
+  </p>
+  <object data="{{ url_for('static', filename='images/israel_map.svg') }}"
+          type="image/svg+xml"></object>
+
   <form method="post" id="mapForm">
     <input type="hidden" name="map_choice" id="map_choice">
     <input type="hidden" name="action" value="map_pick">
   </form>
+
   {% for n,l,t in map_positions %}
     <button type="button"
-      style="position:absolute;left:{{l}};top:{{t}};width:auto;min-height:auto;padding:6px 10px;font-size:14px"
+      class="map-btn"
+      style="left:{{ l }}; top:{{ t }};"
       onclick="
-        document.getElementById('map_choice').value='{{n}}';
+        document.getElementById('map_choice').value='{{ n }}';
         document.getElementById('mapForm').submit();
       ">
-      {{ n }}
+      <img src="{{ url_for('static', filename='images/heart_pin.png') }}">
+      <span>{{ n }}</span>
     </button>
   {% endfor %}
 </div>
 
 {% elif step == 3 %}
 <div class="center">
+  <p class="pics-instructions">
+  תהיה יצירתי: מה משותף לכל התמונות?
+  </p>
   <div class="pics">
     {% for img in pic_images %}
       <div class="pic-box">
@@ -231,47 +363,96 @@ input{
   <form method="post">
     <input type="text" name="pic_guess">
     <input type="hidden" name="action" value="pic_submit">
-    <button>שלח</button>
+    <button class="balloon-btn">שלח</button>
   </form>
 </div>
 
 {% elif step == 4 %}
 <div class="center">
-  <h3>מה מחמם בלי להידלק ומרגיע בלי לגעת?</h3>
+  <h3>אני מתחילה בדרור ומסתיימת בשיבה.<br>
+מחק ממני את סופי– ואהפוך לרעיון מופשט,<br>
+הוסיף לי יו”ד– ואהפוך לתכונה.<br>
+<br>
+כשתפגוש בי, פנייך ימחקו מן המסך,<br>
+ואם כבר מדברים- קדמה לי ארץ שלמה, אך איני מקום.<br>
+<br>
+אה, ואני גם מתחילה ממשיכה ונגמרת בנחירות הנוראיות שלך.<br>
+<br>
+מי אני?</h3>
   <form method="post">
     <input type="text" name="text_guess">
     <input type="hidden" name="action" value="text_submit">
-    <button>שלח</button>
+    <button class="balloon-btn">שלח</button>
   </form>
 </div>
 
 {% elif step == 5 %}
 <div class="center">
-<form method="post" id="dateForm">
-  <input type="hidden" name="date_choice" id="date_choice">
-  <input type="hidden" name="action" value="date_pick">
-</form>
+  <h3>בוא נבחן את התחושות בטן שלך,<br>תבחר יום💕</h3>
 
-<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
-{% for d in ["15","16","17","18","19","20","21"] %}
-<button type="button"
- onclick="
-  document.getElementById('date_choice').value='2026-02-{{d}}';
-  document.getElementById('dateForm').submit();
- ">
- {{ d }}/02
-</button>
-{% endfor %}
+  {% set days = [
+  ('יום ראשון', 15),
+  ('יום שני', 16),
+  ('יום שלישי', 17),
+  ('יום רביעי', 18),
+  ('יום חמישי', 19),
+  ('יום שישי', 20),
+  ('יום שבת', 21)
+  ] %}
+
+  <div class="date-grid">
+  {% for name, day in days %}
+    <form method="post">
+      <input type="hidden" name="action" value="date_pick">
+      <input type="hidden" name="date_choice" value="2026-02-{{ day }}">
+      <button class="date-btn">
+        {{ name }}<br>{{ day }}/02
+      </button>
+    </form>
+  {% endfor %}
+  </div>
 </div>
+
+
+{% elif step == "failed" %}
+<div class="center">
+  <p><strong>{{ message }}</strong></p>
+  <form method="post">
+    <input type="hidden" name="action" value="continue_after_fail">
+    <button class="balloon-btn">המשך לחידה הבאה💕</button>
+  </form>
+</div>
+
+{% elif step == "success" %}
+<div class="center">
+  <p><strong>{{ message }}</strong></p>
+
+  <form method="post">
+    <input type="hidden" name="action" value="continue_after_success">
+    <button class="balloon-btn">המשך לחידה הבאה 💕</button>
+  </form>
 </div>
 
 {% elif step == 999 %}
-<div class="center">
-  <h2>🎉 סיימת את המשחק 🎉</h2>
-  <p>מחכה לך הפתעה מתוקה 💕</p>
-</div>
+  {% if session.get('end_result') == "success" %}
+  <div class="center">
+    <h2>באופן מפתיע צדקת!</h2>
+    <p>
+      יודע כבר לנחש מה מחכה לך?🎁<br>
+    </p>
+  </div>
+  {% else %}
+  <div class="center">
+    <h2>לא מפתיע... ינרקומן</h2>
+    <p>
+      אומנם לא הלך עם הניחושים,<br>
+      אבל היי- לפחות איתי עובד לך😉💕<br>
+      אני אוהבת אותך מאמי (אבל צפה פגיעה😈)
+    </p>
+  </div>
+  {% endif %}
 {% endif %}
-
 </div>
+
 </body>
 </html>
