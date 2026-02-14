@@ -298,11 +298,18 @@ input{
   </strong></p>
   <img src="{{ url_for('static', filename='images/math.png') }}">
   {% if not session.get('unlock_math') %}
-  <form method="post">
-    <input type="text" name="math_guess">
-    <input type="hidden" name="action" value="math_submit">
-    <button class="balloon-btn">בדוק</button>
-  </form>
+  <form method="post" autocomplete="off">
+  <input
+    type="text"
+    name="math_guess"
+    autocomplete="off"
+    autocapitalize="off"
+    autocorrect="off"
+    spellcheck="false"
+  >
+  <input type="hidden" name="action" value="math_submit">
+  <button class="balloon-btn">בדוק</button>
+</form>
   {% endif %}
 </div>
 
@@ -458,4 +465,5 @@ input{
 
 </body>
 </html>
+
 
