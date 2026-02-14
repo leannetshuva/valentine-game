@@ -326,9 +326,11 @@ input{
   <p class="map-instructions">
   תחבר (או תנחש) את המספרים שמצאת בחידה הקודמת.<br>
   </p>
-  <object data="{{ url_for('static', filename='images/israel_map.svg') }}"
-          type="image/svg+xml"></object>
-
+  <img
+  src="{{ url_for('static', filename='images/israel_map.svg') }}"
+  alt="מפת ישראל"
+  style="width:100%; height:auto;"
+  >
   <form method="post" id="mapForm">
     <input type="hidden" name="map_choice" id="map_choice">
     <input type="hidden" name="action" value="map_pick">
